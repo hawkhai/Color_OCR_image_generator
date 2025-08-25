@@ -31,10 +31,22 @@ from data_aug import apply_lr_motion
 from data_aug import apply_up_motion
 
 
+# 自定义 Unpickler 修复模块名
+class FixUnpickler(pickle._Unpickler):
+    def find_class(self, module, name):
+        # 去掉可能的 '\r' 并替换旧函数名
+        module = module.strip()
+        # 将旧的 _reconstruct 指向 np.core.multiarray._reconstruct
+        if module == "numpy.core.multiarray" and name == "_reconstruct":
+            from numpy.core.multiarray import _reconstruct
+            return _reconstruct
+        return super().find_class(module, name)
+
 class FontColor(object):
     def __init__(self, col_file):
+        print(col_file) # ./models/colors_new.cp
         with open(col_file, 'rb') as f:
-            u = pickle._Unpickler(f)
+            u = FixUnpickler(f)
             u.encoding = 'latin1'
             self.colorsRGB = u.load()
         self.ncol = self.colorsRGB.shape[0]
