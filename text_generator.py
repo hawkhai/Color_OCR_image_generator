@@ -21,13 +21,13 @@ def get_char_lines(txt_root_path):
 
 
 def get_chars(char_lines):
-    """获取随机字符串"""
+    """获取随机字符串 - 限制为1-2个字符"""
     while True:
         char_line = random.choice(char_lines)
         if len(char_line) > 0:
             break
     line_len = len(char_line)         
-    char_len = random.randint(1, 20)  #  4
+    char_len = random.randint(1, 2)  # 限制为1-2个字符
     if line_len <= char_len:
         return char_line
     char_start = random.randint(0, line_len - char_len)

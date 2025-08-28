@@ -118,7 +118,7 @@ def get_horizontal_text_picture(image_file, color_lib, char_lines, fonts_list, f
             draw.text((x1, y1), c, best_color, font=font)
             x1 += (chars_size[i][0] + char_space_width)    
         crop_img = img.crop((crop_x1, crop_y1, crop_x2, crop_y2))
-        return crop_img, chars 
+        return crop_img, chars, font_path 
    
     else:
         while True:            
@@ -192,7 +192,7 @@ def get_horizontal_text_picture(image_file, color_lib, char_lines, fonts_list, f
         draw.text((x1, y1), chars, best_color, font=font)
         crop_img = img.crop((crop_x1, crop_y1, crop_x2, crop_y2))
                 
-        return crop_img, chars
+        return crop_img, chars, font_path
 
 
 def get_vertical_text_picture(image_file, color_lib, char_lines, fonts_list, font_unsupport_chars, cf):
@@ -281,4 +281,4 @@ def get_vertical_text_picture(image_file, color_lib, char_lines, fonts_list, fon
 
     crop_img = img.crop((crop_x1, crop_y1, crop_x2, crop_y2))
     crop_img = crop_img.transpose(Image.ROTATE_90)
-    return crop_img, chars
+    return crop_img, chars, font_path
