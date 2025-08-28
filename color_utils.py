@@ -162,3 +162,61 @@ def get_bestcolor(color_lib, crop_lab):
 
 # Import random for get_bestcolor function
 import random
+
+
+def calculate_color_contrast(text_color, background_color):
+    """
+    计算文字颜色和背景颜色的对比度
+    Args:
+        text_color: RGB元组 (r, g, b)
+        background_color: RGB元组 (r, g, b) 或背景图片的平均颜色
+    Returns:
+        float: 对比度值，值越大对比度越高
+    """
+    def rgb_to_luminance(rgb):
+        """将RGB转换为亮度值"""
+        r, g, b = [x/255.0 for x in rgb]
+        # 应用gamma校正
+        r = r/12.92 if r <= 0.03928 else pow((r + 0.055)/1.055, 2.4)
+        g = g/12.92 if g <= 0.03928 else pow((g + 0.055)/1.055, 2.4)
+        b = b/12.92 if b <= 0.03928 else pow((b + 0.055)/1.055, 2.4)
+        # 计算相对亮度
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    
+    lum1 = rgb_to_luminance(text_color)
+    lum2 = rgb_to_luminance(background_color)
+    
+    # 确保较亮的颜色在分子位置
+    if lum1 > lum2:
+        return (lum1 + 0.05) / (lum2 + 0.05)
+    else:
+        return (lum2 + 0.05) / (lum1 + 0.05)
+
+
+def get_background_average_color(crop_img):
+    """
+    获取背景图片的平均颜色
+    Args:
+        crop_img: PIL Image对象
+    Returns:
+        tuple: RGB平均颜色 (r, g, b)
+    """
+    img_array = np.array(crop_img)
+    # 计算RGB平均值
+    avg_color = np.mean(img_array.reshape(-1, 3), axis=0)
+    return tuple(avg_color.astype(int))
+
+
+def check_color_contrast(text_color, crop_img, min_contrast=3.0):
+    """
+    检查文字和背景的对比度是否足够
+    Args:
+        text_color: 文字颜色 RGB元组
+        crop_img: 背景图片 PIL Image对象
+        min_contrast: 最小对比度阈值，默认3.0
+    Returns:
+        bool: True表示对比度足够，False表示对比度不足
+    """
+    bg_color = get_background_average_color(crop_img)
+    contrast = calculate_color_contrast(text_color, bg_color)
+    return contrast >= min_contrast

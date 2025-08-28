@@ -8,7 +8,7 @@ import numpy as np
 import random
 from PIL import Image, ImageDraw, ImageFont
 
-from color_utils import get_bestcolor
+from color_utils import get_bestcolor, check_color_contrast
 from font_utils import word_in_font
 from text_generator import get_chars
 
@@ -109,7 +109,14 @@ def get_horizontal_text_picture(image_file, color_lib, char_lines, fonts_list, f
                     r = random.choice([7, 9, 11, 14, 13, 15, 17, 20, 22, 50, 100])
                     g = random.choice([8, 10, 12, 14, 21, 22, 24, 23, 50, 100])
                     b = random.choice([6, 8, 9, 10, 11, 30, 21, 34, 56, 100])
-                    best_color = (r, g, b)                
+                    best_color = (r, g, b)
+                
+                # 检查颜色对比度，如果对比度不足则重新生成
+                if not check_color_contrast(best_color, crop_img, min_contrast=2.5):
+                    retry += 1
+                    if retry < 30:
+                        continue
+                
                 break
             else:
                 pass  
@@ -186,6 +193,13 @@ def get_horizontal_text_picture(image_file, color_lib, char_lines, fonts_list, f
                     g = random.choice([8, 10, 12, 14, 21, 22, 24, 23, 50, 100])
                     b = random.choice([6, 8, 9, 10, 11, 30, 21, 34, 56, 100])
                     best_color = (r, g, b)
+                
+                # 检查颜色对比度，如果对比度不足则重新生成
+                if not check_color_contrast(best_color, crop_img, min_contrast=2.5):
+                    retry += 1
+                    if retry < 30:
+                        continue
+                
                 break
             else:
                 pass
@@ -193,7 +207,6 @@ def get_horizontal_text_picture(image_file, color_lib, char_lines, fonts_list, f
         draw = ImageDraw.Draw(img)
         draw.text((x1, y1), chars, best_color, font=font)
         crop_img = img.crop((crop_x1, crop_y1, crop_x2, crop_y2))
-                
         return crop_img, chars, font_path
 
 
@@ -270,7 +283,14 @@ def get_vertical_text_picture(image_file, color_lib, char_lines, fonts_list, fon
                 r = random.choice([7, 9, 11, 14, 13, 15, 17, 20, 22, 50, 100])
                 g = random.choice([8, 10, 12, 14, 21, 22, 24, 23, 50, 100])
                 b = random.choice([6, 8, 9, 10, 11, 30, 21, 34, 56, 100])
-                best_color = (r, g, b)                
+                best_color = (r, g, b)
+            
+            # 检查颜色对比度，如果对比度不足则重新生成
+            if not check_color_contrast(best_color, crop_img, min_contrast=2.5):
+                retry += 1
+                if retry < 30:
+                    continue
+            
             break
         else:
             pass
