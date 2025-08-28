@@ -76,10 +76,11 @@ def get_horizontal_text_picture(image_file, color_lib, char_lines, fonts_list, f
                     # 随机加一点偏移，且随机偏移的概率占30%                
                     rd = random.random()                    
                     if rd < 0.3:  # 设定偏移的概率
-                        crop_y1 = y1 - random.random() / 5 * f_h
-                        crop_x1 = x1 - random.random() / 2 * f_h
-                        crop_y2 = y2 + random.random() / 5 * f_h
-                        crop_x2 = x2 + random.random() / 2 * f_h
+                        # 分支1：带字符间距的水平文本，需要更多空间适应字符间距变化
+                        crop_y1 = y1 - random.random() / 12 * f_h
+                        crop_x1 = x1 - random.random() / 8 * f_h
+                        crop_y2 = y2 + random.random() / 12 * f_h
+                        crop_x2 = x2 + random.random() / 8 * f_h
                         crop_y1 = int(max(0, crop_y1))
                         crop_x1 = int(max(0, crop_x1))
                         crop_y2 = int(min(h, crop_y2))
@@ -147,10 +148,11 @@ def get_horizontal_text_picture(image_file, color_lib, char_lines, fonts_list, f
                     # 随机加一点偏移，且随机偏移的概率占30%                
                     rd = random.random()
                     if rd < 0.3:  # 设定偏移的概率
-                        crop_y1 = y1 - random.random() / 10 * f_h
-                        crop_x1 = x1 - random.random() / 8 * f_h
-                        crop_y2 = y2 + random.random() / 10 * f_h
-                        crop_x2 = x2 + random.random() / 8 * f_h
+                        # 分支2：整体水平文本，可以更紧凑
+                        crop_y1 = y1 - random.random() / 25 * f_h
+                        crop_x1 = x1 - random.random() / 20 * f_h
+                        crop_y2 = y2 + random.random() / 25 * f_h
+                        crop_x2 = x2 + random.random() / 20 * f_h
                         crop_y1 = int(max(0, crop_y1))
                         crop_x1 = int(max(0, crop_x1))
                         crop_y2 = int(min(h, crop_y2))
@@ -235,10 +237,11 @@ def get_vertical_text_picture(image_file, color_lib, char_lines, fonts_list, fon
                 # 随机加一点偏移，且随机偏移的概率占30%                
                 rd = random.random()
                 if rd < 0.3:  # 设定偏移的概率
-                    crop_y1 = y1 - random.random() / 10 * f_h
-                    crop_x1 = x1 - random.random() / 8 * f_h
-                    crop_y2 = y2 + random.random() / 10 * f_h
-                    crop_x2 = x2 + random.random() / 8 * f_h
+                    # 分支3：垂直文本，垂直方向需要更多空间，水平方向可以紧凑
+                    crop_y1 = y1 - random.random() / 15 * f_h
+                    crop_x1 = x1 - random.random() / 25 * f_h
+                    crop_y2 = y2 + random.random() / 15 * f_h
+                    crop_x2 = x2 + random.random() / 25 * f_h
                     crop_y1 = int(max(0, crop_y1))
                     crop_x1 = int(max(0, crop_x1))
                     crop_y2 = int(min(h, crop_y2))
