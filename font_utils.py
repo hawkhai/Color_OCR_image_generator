@@ -14,6 +14,8 @@ def get_fonts(fonts_path):
     font_files = os.listdir(fonts_path)
     fonts_list = []
     for font_file in font_files:
+        if font_file in (".gitignore",):
+            continue
         font_path = os.path.join(fonts_path, font_file)
         fonts_list.append(font_path)
     return fonts_list
