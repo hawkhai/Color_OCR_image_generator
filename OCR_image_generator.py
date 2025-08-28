@@ -70,31 +70,39 @@ class FixUnpickler(pickle._Unpickler):
 class FontColor(object):
     def __init__(self, col_file):
         print(col_file) # ./models/colors_new.cp
-        try:
-            # Try multiple methods to load the pickle file
-            with open(col_file, 'rb') as f:
-                try:
-                    # First try with FixUnpickler
-                    u = FixUnpickler(f)
-                    u.encoding = 'latin1'
-                    self.colorsRGB = u.load()
-                except:
-                    # If that fails, try standard pickle with different protocols
-                    f.seek(0)
+        
+        # Check if there's a corresponding .npy file
+        npy_file = col_file.replace('.cp', '.npy')
+        
+        if os.path.exists(npy_file):
+            print(f"Loading colors from numpy file: {npy_file}")
+            self.colorsRGB = np.load(npy_file)
+        else:
+            try:
+                # Try multiple methods to load the pickle file
+                with open(col_file, 'rb') as f:
                     try:
-                        self.colorsRGB = pickle.load(f, encoding='latin1')
+                        # First try with FixUnpickler
+                        u = FixUnpickler(f)
+                        u.encoding = 'latin1'
+                        self.colorsRGB = u.load()
                     except:
+                        # If that fails, try standard pickle with different protocols
                         f.seek(0)
                         try:
-                            self.colorsRGB = pickle.load(f, encoding='bytes')
+                            self.colorsRGB = pickle.load(f, encoding='latin1')
                         except:
-                            # Last resort: create a default color palette
-                            print("Warning: Could not load color file, using default colors")
-                            self.colorsRGB = self._create_default_colors()
-        except Exception as e:
-            print(f"Error loading color file: {e}")
-            print("Using default color palette")
-            self.colorsRGB = self._create_default_colors()
+                            f.seek(0)
+                            try:
+                                self.colorsRGB = pickle.load(f, encoding='bytes')
+                            except:
+                                # Last resort: create a default color palette
+                                print("Warning: Could not load color file, using default colors")
+                                self.colorsRGB = self._create_default_colors()
+            except Exception as e:
+                print(f"Error loading color file: {e}")
+                print("Using default color palette")
+                self.colorsRGB = self._create_default_colors()
             
         self.ncol = self.colorsRGB.shape[0]
 
